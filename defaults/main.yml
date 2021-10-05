@@ -1,2 +1,14 @@
 ---
 # Role default lower priority variables
+
+# Horde is configured using PHP files to set variables, settings, 
+# functions, etc. 
+# 
+# horde_files accepts a list of dicts.
+#
+
+horde_files: []
+
+# List of Horde packages
+
+horde_packages: []

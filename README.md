@@ -1,44 +1,14 @@
 # Ansible <!-- this role name --> role
 
-This is an [Ansible](http://www.ansible.com) role which <!-- brief description of the role goes here -->.
+This is an [Ansible](http://www.ansible.com) role which setup the [Horde Groupware Webmail Edition](https://www.horde.org/apps/webmail)
 
 ## Requirements
 
-<!-- Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required. For example: -->
-
-[Ansible 2.7+](http://docs.ansible.com/ansible/latest/intro_installation.html)
+This role requires a LAMP (Linux, Apache, MySQL, PHP) stack.
 
 ## Role Variables
 
-<!-- A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well. For example: -->
-
 A list of all the default variables for this role is available in `defaults/main.yml`.
-
-The role also setups the following facts:
-
-- `thisrole_fact1`: description of the fact
-- `thisrole_fact2`: description of the fact
-- `thisrole_factN`: description of the fact
-
-## Filters
-
-<!-- A description of the filters provided by the role should go here. For example: -->
-
-The role provides these filters:
-
-- `thisrole_filter1`: description of the filter
-- `thisrole_filter2`: description of the filter
-- `thisrole_filterN`: description of the filter
-
-## Modules
-
-<!-- A description of the modules provided by the role should go here. For example: -->
-
-The role provides these modules:
-
-- `thisrole_module1`: description of the module
-- `thisrole_module2`: description of the module
-- `thisrole_moduleN`: description of the module
 
 ## Tests
 
@@ -52,15 +22,14 @@ The role provides these tests:
 
 ## Dependencies
 
-<!-- A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles. For example: -->
-
 - [amtega.check_platform](https://galaxy.ansible.com/amtega/check_platform)
 - [amtega.proxy_client](https://galaxy.ansible.com/amtega/proxy_client)
 - [amtega.packages](https://galaxy.ansible.com/amtega/packages)
+- [amtega.php](https://galaxy.ansible.com/amtega/php)
+- [amtega.apache](https://galaxy.ansible.com/amtega/apache)
+- [amtega.mysql](https://galaxy.ansible.com/amtega/mysql)
 
 ## Usage
-
-<!-- Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too. For example: -->
 
 This is an example playbook:
 
@@ -69,28 +38,51 @@ This is an example playbook:
 
 - hosts: all
   roles:
-    - role: thisrole
-      thisrole_var1: value1
-      thisrole_var2: value2
-      thisrole_varN: valuen
+    - role: amtega.horde
+      vars:
+        horde_packages:
+          - php-horde-imp
+          - php-horde-ingo
+          - php-horde-kronolith
+          - php-horde-mnemo
+          - php-horde-nag
+          - php-horde-passwd
+          - php-horde-turba
+          - php-channel-horde
+          - php-horde-content
+        horde_files:
+          - file: "{{ horde_config_dir }}/ingo/conf.php2"
+            description: "INGO configuration file"
+            state: present
+            content: |
+              <?php
+              /* CONFIG START. DO NOT CHANGE ANYTHING IN OR AFTER THIS LINE. */
+              // $Hash: 250aa3932bf63e25d99fe1399ded4932870fa93f
+              // $Id: 48142d13ef06c07f56427fe5b43981631bdbfdb0 $
+              $conf['storage']['params']['driverconfig'] = 'horde';
+              $conf['storage']['driver'] = 'sql';
+              $conf['rules']['userheader'] = true;
+              $conf['spam']['header'] = 'X-Spam-Level';
+              $conf['spam']['char'] = '*';
+              $conf['spam']['compare'] = 'string';
+              /* CONFIG END. DO NOT CHANGE ANYTHING IN OR BEFORE THIS LINE. */
+
 ```
 
 ## Testing
 
-<!-- A description of how to run tests of the role if available. For example: -->
-
 Tests are based on docker containers. You can setup docker engine quickly using the playbook `files/setup.yml` available in the role [amtega.docker_engine](https://galaxy.ansible.com/amtega/docker_engine).
 
-Once you have docker, you can run the tests with the following commands:
+  Once you have docker, you can run the tests with the following commands:
 
 ```shell
-$ cd thisrole/tests
+$ cd amtega.horde/tests
 $ ansible-playbook main.yml
 ```
 
 ## License
 
-Copyright (C) <!-- YEAR --> AMTEGA - Xunta de Galicia
+Copyright (C) 2021 AMTEGA - Xunta de Galicia
 
 This role is free software: you can redistribute it and/or modify it under the terms of:
 
@@ -99,7 +91,3 @@ GNU General Public License version 3, or (at your option) any later version; or 
 This role is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details or European Union Public License for more details.
 
 ## Author Information
-
-- <!-- author _name 1 -->.
-- <!-- author _name 2 -->.
-- <!-- author _name N -->.
