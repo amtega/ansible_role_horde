@@ -1,2 +1,14 @@
 ---
 # Role tasks
+
+- name: Install Horde
+  import_tasks: install.yml
+  tags:
+    - role::horde
+    - role::horde::install
+
+- name: Configure horde
+  import_tasks: configure.yml
+  tags:
+    - role::horde
+    - role::horde::configure

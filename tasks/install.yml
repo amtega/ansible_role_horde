@@ -1,0 +1,11 @@
+---
+# Role install tasks
+
+- name: Install Horde packages
+  package:
+    name: "{{ horde_package }}"
+    state: present
+  loop: "{{ horde_packages }}"
+  loop_control:
+    loop_var: horde_package
+    label: "{{ horde_package }}"

@@ -1,2 +1,8 @@
 ---
-# Role variables
+# vars file for amtega.horde
+
+horde_default_owner: apache
+horde_default_group: apache
+horde_default_mode: "0640"
+
+horde_config_dir: /etc/horde
