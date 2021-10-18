@@ -1,14 +1,28 @@
 ---
 # Role default lower priority variables
 
-# Horde is configured using PHP files to set variables, settings, 
-# functions, etc. 
-# 
-# horde_files accepts a list of dicts.
+# List of dicts with horde configuration files. The structure of the dicts is
+# the following:
 #
+# {
+#   content: <content>                        # Content of the file
+#   file: <file>                              # File path
+#   owner: <owner>                            # File owner (optional)
+#   group: <group>                            # File group (optional)
+#   mode: <mode>                              # File mode (optional)
+# }
 
 horde_files: []
 
-# List of Horde packages
+# List of horde packages to install
 
-horde_packages: []
+horde_packages:
+  - php-horde-imp
+  - php-horde-ingo
+  - php-horde-kronolith
+  - php-horde-mnemo
+  - php-horde-nag
+  - php-horde-passwd
+  - php-horde-turba
+  - php-channel-horde
+  - php-horde-content

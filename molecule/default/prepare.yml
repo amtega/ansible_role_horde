@@ -3,8 +3,3 @@
 - name: Prepare
   hosts: molecule_hosts
   gather_facts: no
-
-  roles:
-    - role: amtega.epel
-
-    - role: amtega.horde

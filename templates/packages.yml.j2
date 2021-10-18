@@ -1,0 +1,7 @@
+{% if horde_packages | length > 0 %}
+all:
+  all:
+{% for package in horde_packages %}
+    "{{ package }}": present
+{% endfor %}
+{% endif %}

@@ -1,11 +1,42 @@
 ---
 # Role install tasks
 
-- name: Install Horde packages
-  package:
-    name: "{{ horde_package }}"
-    state: present
-  loop: "{{ horde_packages }}"
-  loop_control:
-    loop_var: horde_package
-    label: "{{ horde_package }}"
+- block:
+    - name: Install remi repository package
+      ansible.builtin.yum:
+        name: "{{ horde_remi_repository }}"
+        state: present
+        disable_gpg_check: yes
+
+    - name: Enable remi repository
+      community.general.ini_file:
+        path: /etc/yum.repos.d/remi.repo
+        section: remi
+        option: enabled
+        value: 1
+        no_extra_spaces: yes
+        state: present
+        mode: 0644
+
+    - name: Enable hotfixes in remi-modular repository
+      community.general.ini_file:
+        path: /etc/yum.repos.d/remi-modular.repo
+        section: remi-modular
+        option: module_hotfixes
+        value: 1
+        no_extra_spaces: yes
+        state: present
+        mode: 0644
+  when:
+    - ansible_facts.distribution | lower in ["centos", "redhat"]
+    - ansible_facts.distribution_major_version is version("7", ">")
+  environment: "{{ proxy_client_environment }}"
+
+- name: Setup horde packages
+  include_role:
+    name: amtega.packages
+  vars:
+    packages_os: "{{ lookup('template', 'packages.yml.j2') | from_yaml }}"
+  tags:
+    - role::horde
+    - role::horde::install
