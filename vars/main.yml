@@ -1,8 +1,12 @@
 ---
-# vars file for amtega.horde
+# Role variables
 
 horde_default_owner: apache
 horde_default_group: apache
 horde_default_mode: "0640"
 
 horde_config_dir: /etc/horde
+
+# REMI respository package
+
+horde_remi_repository: https://rpms.remirepo.net/enterprise/remi-release-8.rpm
