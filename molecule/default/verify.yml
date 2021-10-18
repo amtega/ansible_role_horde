@@ -4,4 +4,32 @@
   hosts: molecule_hosts
   gather_facts: no
   tasks:
-    - debug: msg="Verify to be done"
+
+    - name: Load role variables
+      include_vars: ../../vars/main.yml
+
+    - name: Check installed packages
+      package: 
+        name:  "{{ horde_package }}"
+        state: present
+      loop: "{{ horde_packages }}"
+      loop_control:
+        loop_var: horde_package
+        label: "{{ horde_package }}"
+
+    - name: Copy configuration, preferences and support files
+      ansible.builtin.copy:
+        content: "{{ horde_file.content }}"
+        dest: "{{ horde_file.file }}"
+        owner: "{{ horde_file.owner | d(horde_default_owner) }}"
+        group: "{{ horde_file.group | d(horde_default_group) }}"
+        mode: "{{ horde_file.mode | d(horde_default_mode) }}"
+      loop: "{{ horde_files }}"
+      loop_control:
+        loop_var: horde_file
+        label: "{{ horde_file.file }}"
+      when:
+        - horde_file.file is defined
+        - horde_file.state == 'present'
+      failed_when: configure_files_result.changed is true
+      register: configure_files_result
