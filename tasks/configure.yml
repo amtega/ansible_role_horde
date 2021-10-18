@@ -15,3 +15,15 @@
   when:
     - horde_file.file is defined
     - horde_file.state == 'present'
+
+- name: Remove configuration, preferences and support files
+  file:
+    path: "{{ horde_file.file }}"
+    state: absent
+  loop: "{{ horde_files }}"
+  loop_control:
+    loop_var: horde_file
+    label: "{{ horde_file.file }}"
+  when:
+    - horde_file.file is defined
+    - horde_file.state == 'absent'
