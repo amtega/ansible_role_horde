@@ -1,29 +1,38 @@
 ---
 # Role configure tasks
 
-- name: Copy configuration, preferences and support files
-  ansible.builtin.copy:
-    content: "{{ horde_file.content }}"
-    dest: "{{ horde_file.file }}"
-    owner: "{{ horde_file.owner | d(horde_default_owner) }}"
-    group: "{{ horde_file.group | d(horde_default_group) }}"
-    mode: "{{ horde_file.mode | d(horde_default_mode) }}"
-  loop: "{{ horde_files }}"
-  loop_control:
-    loop_var: horde_file
-    label: "{{ horde_file.file }}"
-  when:
-    - horde_file.file is defined
-    - horde_file.state == 'present'
+- block:
+    - name: Setup horde support files
+      ansible.builtin.copy:
+        content: "{{ horde_file.content }}"
+        dest: "{{ horde_file.file }}"
+        owner: "{{ horde_file.owner | d(horde_default_owner) }}"
+        group: "{{ horde_file.group | d(horde_default_group) }}"
+        mode: "{{ horde_file.mode | d(horde_default_mode) }}"
+      loop: >-
+        {{ horde_files
+           | selectattr("file", "defined")
+           | selectattr("state", "defined")
+           | selectattr("state", "equalto", "present")
+           | list }}
+      loop_control:
+        loop_var: horde_file
+        label: "{{ horde_file.file }}"
 
-- name: Remove configuration, preferences and support files
-  file:
-    path: "{{ horde_file.file }}"
-    state: absent
-  loop: "{{ horde_files }}"
-  loop_control:
-    loop_var: horde_file
-    label: "{{ horde_file.file }}"
-  when:
-    - horde_file.file is defined
-    - horde_file.state == 'absent'
+    - name: Remove horde support files
+      file:
+        path: "{{ horde_file.file }}"
+        state: absent
+      loop: >-
+        {{ horde_files
+           | selectattr("file", "defined")
+           | selectattr("state", "defined")
+           | selectattr("state", "equalto", "absent")
+           | list }}
+      loop_control:
+        loop_var: horde_file
+        label: "{{ horde_file.file }}"
+
+  tags:
+    - role::horde
+    - role::horde::configure
