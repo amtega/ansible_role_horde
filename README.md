@@ -10,16 +10,6 @@ This role requires a LAMP (Linux, Apache, MySQL, PHP) stack.
 
 A list of all the default variables for this role is available in `defaults/main.yml`.
 
-## Tests
-
-<!-- A description of the tests provided by the role should go here. For example: -->
-
-The role provides these tests:
-
-- `thisrole_test1`: description of the test
-- `thisrole_test2`: description of the test
-- `thisrole_testN`: description of the test
-
 ## Dependencies
 
 - [amtega.check_platform](https://galaxy.ansible.com/amtega/check_platform)
@@ -51,7 +41,7 @@ This is an example playbook:
           - php-channel-horde
           - php-horde-content
         horde_files:
-          - file: "{{ horde_config_dir }}/ingo/conf.php2"
+          - file: "{{ horde_config_dir }}/ingo/conf.php"
             description: "INGO configuration file"
             state: present
             content: |
@@ -76,8 +66,7 @@ Tests are based on docker containers. You can setup docker engine quickly using 
   Once you have docker, you can run the tests with the following commands:
 
 ```shell
-$ cd amtega.horde/tests
-$ ansible-playbook main.yml
+$ molecule test
 ```
 
 ## License

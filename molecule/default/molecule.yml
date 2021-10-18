@@ -12,73 +12,54 @@ driver:
   name: docker
 lint: "${MOLECULE_SCENARIO_DIRECTORY}/linters.sh"
 platforms:
-  - name: "centos6-${INSTANCE_UUID:-1}"
-    image: centos:6
-    dockerfile: Dockerfile.centos6.j2
-    # Only required for systemd enabled containers
-    # dockerfile: Dockerfile.systemd.j2
-    # command: /sbin/init
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    # volumes:
-    #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
-    groups:
-      - molecule_hosts
-      - molecule_hosts_centos
-      - molecule_hosts_centos_6
   - name: "centos7-${INSTANCE_UUID:-1}"
     image: centos:7
-    # Only required for systemd enabled containers
-    # dockerfile: Dockerfile.systemd.j2
-    # command: /sbin/init
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    # volumes:
-    #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    dockerfile: Dockerfile.systemd.j2
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - molecule_hosts
       - molecule_hosts_centos
       - molecule_hosts_centos_7
   - name: "centos8-${INSTANCE_UUID:-1}"
     image: centos:8
-    # Only required for systemd enabled containers
-    # dockerfile: Dockerfile.systemd.j2
-    # command: /sbin/init
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    # volumes:
-    #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    dockerfile: Dockerfile.systemd.j2
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - molecule_hosts
       - molecule_hosts_centos
       - molecule_hosts_centos_8
   - name: "fedora33-${INSTANCE_UUID:-1}"
     image: fedora:33
-    # Only required for systemd enabled containers
-    # dockerfile: Dockerfile.systemd.j2
-    # command: /sbin/init
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    # volumes:
-    #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    dockerfile: Dockerfile.systemd.j2
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - molecule_hosts
       - molecule_hosts_fedora
       - molecule_hosts_fedora_33
   - name: "fedora34-${INSTANCE_UUID:-1}"
     image: fedora:34
-    # Only required for systemd enabled containers
-    # dockerfile: Dockerfile.systemd.j2
-    # command: /sbin/init
-    # tmpfs:
-    #   - /run
-    #   - /tmp
-    # volumes:
-    #   - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    dockerfile: Dockerfile.systemd.j2
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     groups:
       - molecule_hosts
       - molecule_hosts_fedora
@@ -93,6 +74,34 @@ provisioner:
     hosts:
       molecule_hosts:
         vars:
+          horde_packages:
+            - php-horde-imp
+            - php-horde-ingo
+            - php-horde-kronolith
+            - php-horde-mnemo
+            - php-horde-nag
+            - php-horde-passwd
+            - php-horde-turba
+            - php-channel-horde
+            - php-horde-content
+          horde_files:
+            - file: "{{ horde_config_dir }}/prefs.local.php"
+              description: "Custom preferences"
+              state: present
+              content: |
+                <?php
+                  $_prefs['from_addr']['hook'] = true;
+                  $_prefs['from_addr']['locked'] = true;
+                  $_prefs['fullname']['hook'] = true;
+                  $_prefs['fullname']['locked'] = true;
+                  $_prefs['id']['hook'] = true;
+                  $_prefs['id']['locked'] = true;
+                  $_prefs['initial_application']['value'] = 'imp';
+                  $_prefs['initial_application']['locked'] = true;
+                  $_prefs['first_week_day']['value'] = '1';
+                  $_prefs['default_identity']['locked'] = 1;
+                  $_prefs['theme']['value'] = 'my_theme';
+                  $_prefs['theme']['locked'] = true;
       molecule_hosts_fedora:
         vars:
           ansible_python_interpreter: /usr/bin/python3
