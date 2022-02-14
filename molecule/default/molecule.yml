@@ -13,29 +13,17 @@ driver:
 lint: "${MOLECULE_SCENARIO_DIRECTORY}/linters.sh"
 platforms:
   - name: "centos7-${INSTANCE_UUID:-1}"
-    image: centos:7
+    image: quay.io/centos/centos:centos7
     groups:
       - molecule_hosts
       - molecule_hosts_centos
       - molecule_hosts_centos_7
   - name: "centos8-${INSTANCE_UUID:-1}"
-    image: centos:8
+    image: quay.io/centos/centos:stream8
     groups:
       - molecule_hosts
       - molecule_hosts_centos
       - molecule_hosts_centos_8
-  - name: "fedora34-${INSTANCE_UUID:-1}"
-    image: fedora:34
-    groups:
-      - molecule_hosts
-      - molecule_hosts_fedora
-      - molecule_hosts_fedora_34
-  - name: "fedora35-${INSTANCE_UUID:-1}"
-    image: fedora:35
-    groups:
-      - molecule_hosts
-      - molecule_hosts_fedora
-      - molecule_hosts_fedora_35
 provisioner:
   name: ansible
   config_options:
