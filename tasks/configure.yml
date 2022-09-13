@@ -1,7 +1,7 @@
 ---
-# Role configure tasks
 
-- block:
+- name: Configure horde
+  block:
     - name: Setup horde support files
       ansible.builtin.copy:
         content: "{{ horde_file.content }}"
@@ -20,7 +20,7 @@
         label: "{{ horde_file.file }}"
 
     - name: Remove horde support files
-      file:
+      ansible.builtin.file:
         path: "{{ horde_file.file }}"
         state: absent
       loop: >-

@@ -1,7 +1,7 @@
 ---
-# Role install tasks
 
-- block:
+- name: Install horde
+  block:
     - name: Install remi repository package
       ansible.builtin.yum:
         name: "{{ horde_remi_repository }}"
@@ -31,7 +31,7 @@
   environment: "{{ proxy_client_environment }}"
 
 - name: Setup horde packages
-  include_role:
+  ansible.builtin.include_role:
     name: amtega.packages
   vars:
     packages_os: "{{ lookup('template', 'packages.yml.j2') | from_yaml }}"
