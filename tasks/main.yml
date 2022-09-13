@@ -1,5 +1,4 @@
 ---
-# Role tasks
 
 - name: Install horde
   include_tasks: install.yml
